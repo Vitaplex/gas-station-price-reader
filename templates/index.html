@@ -1,7 +1,6 @@
 <input id="imageElement" type="file" placeholder="Upload image file..." accept=".jpg, .jpeg, .png"></input>
-
+<button onclick="readFile()">Upload</button>
 <script>
-    let imageElement = document.getElementById("imageElement");
     imageElement.addEventListener("change", async () => { await readFile() });
 
     async function readFile() {
@@ -27,5 +26,10 @@
             method: "POST",
             body: content
         })
+
+        const responseBox = document.createElement("p");
+        let responseContent = await response.json();
+        responseBox.innerText = JSON.stringify(responseContent);
+        document.body.appendChild(responseBox);
     }
 </script>

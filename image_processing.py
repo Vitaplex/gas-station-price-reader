@@ -1,18 +1,24 @@
+import sys
+print("PYTHON:", sys.executable)
+
 import cv2
+print("CV2:", cv2.__file__)
+
+import base64
+
 import easyocr
+import numpy as np
 from ultralytics import YOLO
 
 
 class ImageProcessing:
-    def __init__(self, model_path):
+    def __init__(self, model_path:str, lang:list[str]):
         self.model = YOLO(model_path)
-        self.reader = easyocr.Reader(['en'])
+        self.reader = easyocr.Reader(lang)
 
-    def process_image(self, image_path, show=False):
-        image = cv2.imread(image_path)
-
+    def process_image(self, image, show=False):
         if image is None:
-            raise ValueError(f"Could not load image: {image_path}")
+            raise ValueError(f"Could not load image: {image}")
 
         results = self.model(image)
 
@@ -60,5 +66,13 @@ class ImageProcessing:
 
         if show:
             cv2.destroyAllWindows()
-
         return detections
+    
+    def load_image(self, image:bytes):
+        data_str = image.decode()
+        
+        header, encoded = data_str.split(",", 1)
+        nparr = np.frombuffer(base64.b64decode(encoded), np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        return image

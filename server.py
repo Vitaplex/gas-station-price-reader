@@ -1,29 +1,26 @@
-import base64
-import json
 import os
 import numpy as np
-import cv2
 from flask import Flask, request, jsonify, render_template
 
-from imageProcessing import ImageProcessing
+from dataset_class_fetcher import DatasetClassFetcher
+from image_processing import ImageProcessing
+
+
+MODEL_PATH = os.path.abspath(os.path.join(os.path.curdir, "test-model", "best.pt"))
+CLASS_PATH = os.path.abspath(os.path.join(os.path.curdir, "..", "dataset","data.yaml"))
+
+class_fetcher = DatasetClassFetcher(CLASS_PATH)
+processor = ImageProcessing(MODEL_PATH, ['en'])
 
 app = Flask(__name__)
 
-MODEL_PATH = os.path.abspath(os.path.join(os.path.curdir, "test-model", "best.pt"))
-
-processor = ImageProcessing(MODEL_PATH)
-
 @app.route("/predict", methods=["POST"])
 def predict():
-    file = request.get_data()
-    if not file:
-        return jsonify({"error": "No file provided"}), 400
+    imageRaw = request.get_data()
+    if not imageRaw:
+        return jsonify({"error": "No image provided"}), 400
 
-    data_str = file.decode()
-    
-    header, encoded = data_str.split(",", 1)
-    nparr = np.frombuffer(base64.b64decode(encoded), np.uint8)
-    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    image = processor.load_image(imageRaw)
 
     if image is None:
         return jsonify({"error": "Invalid image"}), 400
@@ -31,6 +28,10 @@ def predict():
     results = processor.process_image(image, show=False)
 
     return jsonify({"detections": results})
+
+@app.route("/class-id", methods=["GET"])
+def class_ids():
+    return class_fetcher.get_classes()
 
 @app.route("/")
 def home():

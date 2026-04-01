@@ -1,0 +1,31 @@
+<input id="imageElement" type="file" placeholder="Upload image file..." accept=".jpg, .jpeg, .png"></input>
+
+<script>
+    let imageElement = document.getElementById("imageElement");
+    imageElement.addEventListener("change", async () => { await readFile() });
+
+    async function readFile() {
+        let curFile = imageElement.files[0];
+
+        if (!curFile) { alert("No file selected!"); return; }
+
+        const reader = new FileReader();
+
+        let fileContent;
+
+        reader.onload = async function (e) {
+            await sendFile(e.target.result);
+        };
+
+        reader.readAsDataURL(curFile);
+    }
+
+    async function sendFile(content) {
+        console.log("Sending");
+        
+        const response = await fetch("/predict", {
+            method: "POST",
+            body: content
+        })
+    }
+</script>

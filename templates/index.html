@@ -1,35 +1,28 @@
-<input id="imageElement" type="file" placeholder="Upload image file..." accept=".jpg, .jpeg, .png"></input>
-<button onclick="readFile()">Upload</button>
-<script>
-    imageElement.addEventListener("change", async () => { await readFile() });
+<html lang="en">
 
-    async function readFile() {
-        let curFile = imageElement.files[0];
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
 
-        if (!curFile) { alert("No file selected!"); return; }
+<body>
+    <input id="imageElement" type="file" placeholder="Upload image file..." multiple="true" accept=".jpg, .jpeg, .png, .heic">
+    
+    <input id="cameraElement" type="file" accept="image/*" capture="environment" hidden>
+    <label for="cameraElement" class="button">📷</label>
 
-        const reader = new FileReader();
+    <select id="dropdown" id="outputFormat">
+        <option>default</option>
+        <option>jvinsnes</option>
+        <option>raw</option>
+    </select>
 
-        let fileContent;
+    <button id="uploadButton">Upload</button>
+    <button onclick="document.querySelectorAll('.picture_with_results').forEach(el => el.remove())">Clear</button>
 
-        reader.onload = async function (e) {
-            await sendFile(e.target.result);
-        };
+    <br>
+</body>
 
-        reader.readAsDataURL(curFile);
-    }
-
-    async function sendFile(content) {
-        console.log("Sending");
-        
-        const response = await fetch("/predict", {
-            method: "POST",
-            body: content
-        })
-
-        const responseBox = document.createElement("p");
-        let responseContent = await response.json();
-        responseBox.innerText = JSON.stringify(responseContent);
-        document.body.appendChild(responseBox);
-    }
-</script>
+</html>

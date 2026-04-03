@@ -1,0 +1,71 @@
+:root.dark {
+    --gspn-text-main: white;
+    --gspn-bg-main: #1b1820;
+
+    --gspn-grey01: #222222;
+
+    --gspn-primary-light: #3d6e66;
+    --gspn-primary-dark: #79b9b3;
+
+    --gspn-secondary-light: #493a5e;
+    --gspn-secondary-medium: #4a3181;
+    --gspn-secondary-dark: #9382bb;
+}
+
+:root {
+    --gspn-text-main: black;
+    --gspn-bg-main: white;
+
+    --gspn-grey01: #eeeeee;
+
+    --gspn-primary-light: #b7f0e0;
+    --gspn-primary-dark: #12615a;
+
+    --gspn-secondary-light: #6a5584;
+    --gspn-secondary-medium: #473245;
+    --gspn-secondary-dark: #372e49;
+}
+
+details.noarrow summary::marker {
+    content: none;
+}
+
+details.noarrow summary::-webkit-details-marker {
+    display: none;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--gspn-text-main);
+    background-color: var(--gspn-bg-main);
+}
+
+img {
+    width: 256px;
+}
+
+.picture_with_results {
+    display: flex;
+    gap: 20px;
+    background-color: var(--gspn-grey01);
+    color: var(--gspn-primary-dark);
+    max-width: 768px;
+    border: 2px solid var(--gspn-secondary-dark);
+}
+
+/* Dark mode button */
+details#darkmode-button {
+    position: fixed;
+    right: 1vw;
+    bottom: 1vh;
+    font-size: xx-large;
+    color: rgba(0, 0, 0, 0.75)
+}
+
+details#darkmode-button summary::after {
+    content: "💡";
+}
+
+details[open]#darkmode-button summary::after {
+    content: "🌙";
+}
